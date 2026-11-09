@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn Thi Sát Hạch CNTT - Phần 6 (Câu 148-177)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        h1 {
+            text-align: center;
+            color: #0d6efd;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            font-size: 22px;
+        }
+        .question-block {
+            background: #fafafa;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 4px solid #0d6efd;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .option-label:hover {
+            background: #f1f7ff;
+            border-color: #0d6efd;
+        }
+        .option-label input {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .btn {
+            flex: 1;
+            padding: 15px;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-transform: uppercase;
+        }
+        .btn-submit { background: #0d6efd; }
+        .btn-submit:hover { background: #0b5ed7; }
+        
+        .btn-retry-failed { 
+            background: #dc3545; 
+            display: none; 
+        }
+        .btn-retry-failed:hover { background: #bb2d3b; }
+
+        .result-box {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #e2e3e5;
+            border: 2px solid #6c757d;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #383d41;
+        }
+        .correct-answer {
+            background: #d1e7dd !important;
+            border-color: #198754 !important;
+            font-weight: bold;
+            color: #0f5132;
+        }
+        .wrong-answer {
+            background: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #842029;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>BỘ CÂU HỎI ÔN THI SÁT HẠCH CNTT (CÂU 148 - 177)</h1>
+    <div id="quiz"></div>
+    
+    <div id="result" class="result-box"></div>
+
+    <div class="action-buttons">
+        <button class="btn btn-submit" id="submit-btn" onclick="checkAnswers()">Nộp bài & Xem kết quả</button>
+        <button class="btn btn-retry-failed" id="retry-btn" onclick="filterWrongQuestions()">Làm lại các câu sai</button>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    {
+        q: "Công thức INT(9*5/2) cho kết quả là:",
+        a: ["22", "Công thức sai", "23", "22.5"],
+        correct: 0
+    },
+    {
+        q: "Trong MS Excel, công thức sau trả về giá trị nào: = IF(5 >= 5, \"Không được tuyển dụng\")",
+        a: ["Công thức sai vì trong Excel không có phép toán =>", "Không được tuyển dụng", "Công thức sai vì thiếu đối số trong hàm IF", "TRUE"],
+        correct: 1
+    },
+    {
+        q: "Trong PowerPoint muốn sắp xếp các slide ta dùng lệnh nào sau đây:",
+        a: ["Slide Sorter.", "Không thể thực hiện được", "New Slide.", "Slide Master"],
+        correct: 0
+    },
+    {
+        q: "Trong Excel, hàm MONTH(\"09-Jan-2008\") cho kết quả:",
+        a: ["2008", "10", "1", "09"],
+        correct: 2
+    },
+    {
+        q: "Quá trình nào biến email trở nên khó đọc đối với mọi người ngoại trừ người được gửi email đó?",
+        a: ["mã hóa bảo mật", "nguy trang", "sửa lỗi", "chuyển đổi định dạng"],
+        correct: 0
+    },
+    {
+        q: "Đường tắt (Shortcut) là gì?",
+        a: ["Là chương trình được cài đặt vào máy tính giúp người dùng khởi động máy tính nhanh chóng.", "Là chương trình được cài đặt vào máy tính với mục đích hỗ trợ người sử dụng soạn thảo các văn bản tiếng việt.", "Là biểu tượng để mở cửa sổ My Computer.", "Là biểu tượng giúp người dùng truy cập nhanh vào đối tượng thường sử dụng."],
+        correct: 3
+    },
+    {
+        q: "Phần mềm nào dùng để mở (hay đọc) file có phần phân loại (phần mở rộng) là .pdf ?",
+        a: ["Java", "Adobe Acrobat", "Microsoft Word", "QuickTime"],
+        correct: 1
+    },
+    {
+        q: "Trong MS Word, khi một Symbol (ký tự đặc biệt) được chèn vào văn bản thì:",
+        a: ["Có thể sao chép", "Có thể xoá bằng phím Delete", "Có thể xoá bằng phím Delete, có thể thay đổi kích thước, có thể sao chép", "Có thể thay đổi kích thước"],
+        correct: 2
+    },
+    {
+        q: "Trong MS Word, muốn tạo một văn bản mới, ta thực hiện:",
+        a: ["New; File", "File; New", "File; Open", "Insert; File"],
+        correct: 1
+    },
+    {
+        q: "Trong MS Word, chức năng Formula trong Table là dùng để:",
+        a: ["Sắp xếp Table theo trật tự nào đó.", "Chèn ký hiệu toán học vào trong ô của Table.", "Chèn một kí hiệu đặc biệt vào ô của Table.", "Thực hiện các phép toán đơn giản trong ô của Table"],
+        correct: 3
+    },
+    {
+        q: "Trong MS Excel, công thức sau sẽ trả về kết quả nào: = ROUND(7475.47, -2)",
+        a: ["7480", "7475", "7500", "7475,5"],
+        correct: 2
+    },
+    {
+        q: "Định nghĩa của một giấy phép bản quyền là gì ?",
+        a: ["Việc ủy quyền hợp pháp để sử dụng một sản phẩm phần mềm", "Một sự bảo đảm pháp lý mà một máy tính sẽ làm việc như mô tả trong các tài liệu sản phẩm.", "Khả năng đăng nhập vào hệ thống máy tính đa người dùng", "Các thủ tục được sử dụng để truy cập vào một hệ điều hành hoặc ứng dụng"],
+        correct: 0
+    },
+    {
+        q: "Trong Excel, muốn chèn thêm một cột sau cột E, đặt con trỏ tại cột :",
+        a: ["Cột F", "Cột E", "Cột D", "Cột C"],
+        correct: 0
+    },
+    {
+        q: "Phát biểu nào về Hệ điều hành là đúng ?",
+        a: ["Một hệ điều hành là tập hợp các chương trình được thiết kế để tạo ra tờ rơi, bản tin, hoặc các trang web", "Một hệ điều hành là một chương trình thực hiện chức năng cụ thể như kế toán, xử lý văn bản, hoặc soạn thảo", "Một hệ điều hành là ứng dụng phổ biến nhất cho phép bạn tạo, lưu và chỉnh sửa các tài liệu", "Một hệ điều hành là tập hợp các chương trình được thiết kế để kiểm soát sự tương tác của máy tính và giao tiếp với người sử dụng"],
+        correct: 3
+    },
+    {
+        q: "Trong Excel, hàm SUM(-12, -5, 7, 100) cho kết quả:",
+        a: ["9", "90", "100", "-90"],
+        correct: 1
+    },
+    {
+        q: "Trong PowerPoint khi áp dụng một hiệu ứng hình ảnh trên một đối tượng trong slide, thì hiệu ứng đó được gọi là:",
+        a: ["Custom Animation", "Custom View", "Custom Effect", "Custom Transition"],
+        correct: 0
+    },
+    {
+        q: "Thư rác đề cập đến điều gì?",
+        a: ["Virus trong một bản tin.", "Những bản tin không mong muốn để quảng bá sản phẩm, dịch vụ hoặc các chủ đề về chính trị/tôn giáo.", "Hình ảnh trong bản tin từ những người bạn.", "Bản tin từ các công ty mà bạn đã đăng ký để nhận thư."],
+        correct: 1
+    },
+    {
+        q: "Trong MS Word, nhóm lệnh File; Close dùng để:",
+        a: ["Đóng tất cả các tập tin đang mở", "Đóng tập tin đang mở ở cửa sổ hiện hành", "Lệnh trên không có", "Đóng tất cả các tập tin và thoát khỏi Word"],
+        correct: 1
+    },
+    {
+        q: "Trong Excel, khi viết sai tên hàm trong tính toán, chương trình thông báo lỗi?",
+        a: ["#VALUE!", "#NAME!", "#N/A!", "#DIV/0!"],
+        correct: 1
+    },
+    {
+        q: "Trong Windows, có thể sử dụng chương trình nào như một máy tính bỏ túi ?",
+        a: ["Notepad", "Excel", "Calculator", "WinWord"],
+        correct: 2
+    },
+    {
+        q: "Tập tin có phần mở rộng Rar (Zip) là:",
+        a: ["Tập tin bảo mật", "Tập tin di động", "Tập tin thực thi", "Tập tin nén"],
+        correct: 3
+    },
+    {
+        q: "Trong soạn thảo Winword, công dụng của tổ hợp Ctrl - F là :",
+        a: ["Định dạng trang", "Lưu tập tin văn bản vào đĩa", "Tạo tập tin văn bản mới", "Chức năng tìm kiếm trong soạn thảo"],
+        correct: 3
+    },
+    {
+        q: "Phương thức phân phối phần mềm nào là miễn phí và có sẵn cho bản thử nghiệm nhưng cần phải trả phí cho ai đó khi mà sử dụng nó lâu dài?",
+        a: ["Nâng cấp", "Miễn phí", "Nguồn mở", "Chia sẻ (Miễn phí dùng thử, trả tiền khi dùng lâu dài)"],
+        correct: 3
+    },
+    {
+        q: "Trong bảng tính Excel, tại ô A2 có sẵn dãy kí tự \"1Angiang2\". Nếu sử dụng nút điền để điền dữ liệu đến các cột B2, C2, D2, E2; thì kết quả nhận được tại ô E2 là:",
+        a: ["1Angiang6", "1Angiang2", "5Angiang6", "5Angiang2"],
+        correct: 0
+    },
+    {
+        q: "Trong MS PowerPoint, chức năng Custom Animation là để:",
+        a: ["Đưa hình ảnh hoặc âm thanh vào bài trình diễn.", "Định dạng cách bố trí các khối văn bản, hình ảnh, đồ thị ... cho một slide.", "Tạo hiệu ứng chuyển trang cho các slide trong bài trình diễn.", "Tạo hiệu ứng động cho đối tượng trong slide."],
+        correct: 3
+    },
+    {
+        q: "Tùy chọn cho phép bạn thay đổi thiết lập người dùng ?",
+        a: ["Phần cứng và Âm thanh", "Hiển thị và Cá nhân", "Chương trình", "Tài khoản người sử dụng"],
+        correct: 3
+    },
+    {
+        q: "Trong MS Word, muốn in văn bản hiện hành ra máy in ta thực hiện:",
+        a: ["Chọn nhóm lệnh Edit; Print", "Chọn nhóm lệnh Insert; Print", "Chọn nhóm lệnh Home; Print", "Chọn nhóm lệnh File; Print"],
+        correct: 3
+    },
+    {
+        q: "Nội dung trong MS Word có tối đa bao nhiêu ký tự:",
+        a: ["Tùy ý", "Tối đa có 65536 ký tự", "Tối đa có 256 dòng", "Tối đa có 10000 từ"],
+        correct: 0
+    },
+    {
+        q: "Hàm nào sau đây cho phép đếm các giá trị thỏa mãn một điều kiện cho trước:",
+        a: ["COUNT", "COUNTIF", "SUMIF", "SUM"],
+        correct: 1
+    },
+    {
+        q: "Trong Excel, giả sử ô A1, A2, A3, có chứa lần lượt các số: 234, abc, 236, tại ô A4 ta điền công thức = COUNTA(A1:A3) thì kết quả là:",
+        a: ["4", "5", "3", "2"],
+        correct: 2
+    }
+];
+
+let shuffledQuizData = [];
+let wrongQuestionIndexes = [];
+
+function prepareQuizData() {
+    shuffledQuizData = quizData.map((item) => {
+        let optionsWithMeta = item.a.map((optionText, index) => {
+            return { text: optionText, isCorrect: index === item.correct };
+        });
+
+        for (let i = optionsWithMeta.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [optionsWithMeta[i], optionsWithMeta[j]] = [optionsWithMeta[j], optionsWithMeta[i]];
+        }
+
+        let newCorrectIndex = optionsWithMeta.findIndex(opt => opt.isCorrect);
+
+        return {
+            q: item.q,
+            a: optionsWithMeta.map(opt => opt.text),
+            correct: newCorrectIndex
+        };
+    });
+}
+
+function loadQuiz() {
+    const quizContainer = document.getElementById('quiz');
+    let output = '';
+
+    shuffledQuizData.forEach((item, qIndex) => {
+        const questionNumber = qIndex + 148; 
+        output += `
+            <div class="question-block" id="q-block-${qIndex}">
+                <div class="question-text">Câu ${questionNumber}: ${item.q}</div>
+                <div class="options">
+        `;
+        
+        item.a.forEach((option, oIndex) => {
+            const prefix = String.fromCharCode(97 + oIndex); 
+            output += `
+                <label class="option-label" id="label-${qIndex}-${oIndex}">
+                    <input type="radio" name="question${qIndex}" value="${oIndex}">
+                    ${prefix}. ${option}
+                </label>
+            `;
+        });
+
+        output += `
+                </div>
+            </div>
+        `;
+    });
+
+    quizContainer.innerHTML = output;
+}
+
+function checkAnswers() {
+    let score = 0;
+    wrongQuestionIndexes = []; 
+
+    shuffledQuizData.forEach((item, qIndex) => {
+        const block = document.getElementById(`q-block-${qIndex}`);
+        if (block.style.display === 'none') return; 
+
+        const selected = document.querySelector(`input[name="question${qIndex}"]:checked`);
+        
+        item.a.forEach((_, oIndex) => {
+            document.getElementById(`label-${qIndex}-${oIndex}`).classList.remove('correct-answer', 'wrong-answer');
+        });
+
+        document.getElementById(`label-${qIndex}-${item.correct}`).classList.add('correct-answer');
+
+        if (selected) {
+            const answerIndex = parseInt(selected.value);
+            if (answerIndex === item.correct) {
+                score++;
+            } else {
+                document.getElementById(`label-${qIndex}-${answerIndex}`).classList.add('wrong-answer');
+                wrongQuestionIndexes.push(qIndex);
+            }
+        } else {
+            wrongQuestionIndexes.push(qIndex);
+        }
+    });
+
+    const totalQuestionsInTurn = shuffledQuizData.length - (shuffledQuizData.length - document.querySelectorAll('.question-block:not([style*="display: none"])').length);
+    const resultBox = document.getElementById('result');
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = `Kết quả lượt này: Đúng ${score}/${totalQuestionsInTurn} câu!`;
+
+    const retryBtn = document.getElementById('retry-btn');
+    if (wrongQuestionIndexes.length > 0) {
+        retryBtn.style.display = 'block';
+    } else {
+        retryBtn.style.display = 'none';
+        resultBox.innerHTML += " 🎉 Tuyệt vời! Bạn đã hoàn thành chính xác tất cả các câu hỏi!";
+    }
+    
+    resultBox.scrollIntoView({ behavior: 'smooth' });
+}
+
+function filterWrongQuestions() {
+    shuffledQuizData.forEach((item, qIndex) => {
+        const block = document.getElementById(`q-block-${qIndex}`);
+        
+        if (wrongQuestionIndexes.includes(qIndex)) {
+            block.style.display = 'block';
+
+            let currentOptions = item.a.map((text, idx) => {
+                return { text: text, isCorrect: idx === item.correct };
+            });
+            for (let i = currentOptions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentOptions[i], currentOptions[j]] = [currentOptions[j], currentOptions[i]];
+            }
+            item.a = currentOptions.map(o => o.text);
+            item.correct = currentOptions.findIndex(o => o.isCorrect);
+
+            const optionsContainer = block.querySelector('.options');
+            let optionsHTML = '';
+            item.a.forEach((option, oIndex) => {
+                const prefix = String.fromCharCode(97 + oIndex);
+                optionsHTML += `
+                    <label class="option-label" id="label-${qIndex}-${oIndex}">
+                        <input type="radio" name="question${qIndex}" value="${oIndex}">
+                        ${prefix}. ${option}
+                    </label>
+                `;
+            });
+            optionsContainer.innerHTML = optionsHTML;
+
+        } else {
+            block.style.display = 'none';
+        }
+    });
+
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('retry-btn').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+prepareQuizData();
+loadQuiz();
+</script>
+
+</body>
+</html>
